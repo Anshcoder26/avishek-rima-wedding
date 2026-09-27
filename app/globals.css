@@ -839,6 +839,14 @@ audio {
   .landscape-canvas {
     position: absolute;
 
+    /*
+     * Before rotation:
+     *   width  = phone height
+     *   height = phone width
+     *
+     * After rotate(90deg), this becomes the full
+     * landscape workspace of the phone.
+     */
     width: 100svh;
     height: 100vw;
 
@@ -858,14 +866,22 @@ audio {
   }
 
   .invitation-viewport {
+    position: absolute;
+
+    inset: 0;
+
     width: 100%;
     height: 100%;
 
     /*
-     * Removed the previous mobile padding because
-     * the rotated canvas already provides the viewport.
+     * The rotated canvas already defines the complete
+     * landscape viewport, so no mobile padding is needed.
      */
     padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     overflow: visible;
 
@@ -874,31 +890,34 @@ audio {
   }
 
   /*
-   * IMPORTANT MOBILE FIX
+   * IMPORTANT MOBILE SIZE FIX
    *
-   * The canvas is landscape after rotation.
+   * Do NOT use width: 88% here.
    *
-   * Therefore the invitation must be sized from the
-   * landscape WIDTH, not from HEIGHT: 88%.
+   * Before rotation, .landscape-canvas has a width equal
+   * to the phone's HEIGHT. A percentage width therefore
+   * makes the invitation too large on portrait phones.
    *
-   * This keeps the three-fold spread centered when
-   * the cover opens.
+   * The canvas HEIGHT equals the phone WIDTH, so sizing
+   * the invitation from vw gives stable sizing across
+   * Samsung, Oppo and other portrait devices.
+   *
+   * 84vw keeps the closed cover comfortably inside the
+   * phone while leaving enough room for the opened
+   * three-fold spread.
    */
 
   .invitation-stage {
-    position: absolute;
+    position: relative;
 
-    left: 50%;
-    top: 50%;
-
-    width: 88%;
-    height: auto;
+    width: auto;
+    height: 84vw;
 
     aspect-ratio: 1536 / 1024;
 
-    transform:
-      translate(-50%, -50%);
+    flex: 0 0 auto;
 
+    transform: none;
     transform-origin: center center;
 
     overflow: visible;
@@ -910,6 +929,7 @@ audio {
 
   /*
    * Keep the petal shower landscape relative.
+   * It must NOT receive its own rotation.
    */
 
   .petal-shower {
@@ -930,19 +950,19 @@ audio {
 ========================================================= */
 
 @media (orientation: portrait) and (max-width: 430px) {
+  /*
+   * Keep the same vw-based sizing on smaller phones.
+   * This avoids different browser viewport heights
+   * changing the apparent invitation scale.
+   */
+
   .invitation-stage {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 88%;
-    height: auto;
+    width: auto;
+    height: 84vw;
 
     aspect-ratio: 1536 / 1024;
 
-    transform:
-      translate(-50%, -50%);
+    transform: none;
   }
 
   .inside-panel {
@@ -962,18 +982,12 @@ audio {
 
 @media (orientation: portrait) and (max-width: 380px) {
   .invitation-stage {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 88%;
-    height: auto;
+    width: auto;
+    height: 84vw;
 
     aspect-ratio: 1536 / 1024;
 
-    transform:
-      translate(-50%, -50%);
+    transform: none;
   }
 
   .inside-panel {
