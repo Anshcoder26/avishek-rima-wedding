@@ -159,6 +159,98 @@ body {
 
 
 /* =========================================================
+   TAP TO OPEN
+========================================================= */
+
+.tap-to-open {
+  position: absolute;
+
+  left: 50%;
+  top: calc(100% + 26px);
+
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  width: max-content;
+
+  padding: 6px 10px;
+
+  border: 0;
+  margin: 0;
+
+  background: transparent;
+
+  color: rgba(245, 218, 165, 0.92);
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(11px, 1.1vw, 15px);
+  font-weight: 400;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  opacity: 1;
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+
+  z-index: 150;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tap-to-open-line {
+  display: block;
+
+  width: clamp(28px, 4vw, 58px);
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(225, 190, 125, 0.75)
+    );
+}
+
+.tap-to-open-line:last-child {
+  background:
+    linear-gradient(
+      to left,
+      transparent,
+      rgba(225, 190, 125, 0.75)
+    );
+}
+
+.tap-to-open-text {
+  display: block;
+
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.tap-to-open.is-hidden {
+  opacity: 0;
+
+  transform:
+    translateX(-50%)
+    translateY(8px);
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
    =========================================================
    THREE-FOLD INSIDE BOOK
    =========================================================
@@ -940,6 +1032,19 @@ audio {
     height: 63%;
   }
 
+  .tap-to-open {
+    top: calc(100% + 18px);
+
+    font-size: 10px;
+    letter-spacing: 0.16em;
+
+    gap: 9px;
+  }
+
+  .tap-to-open-line {
+    width: 28px;
+  }
+
   /*
    * Keep the petal shower landscape relative.
    * It must NOT receive its own rotation.
@@ -994,6 +1099,15 @@ audio {
 ========================================================= */
 
 @media (orientation: portrait) and (max-width: 380px) {
+  .tap-to-open {
+    top: calc(100% + 14px);
+    font-size: 9px;
+  }
+
+  .tap-to-open-line {
+    width: 24px;
+  }
+
   .invitation-stage {
     width: auto;
     height: 84vw;
