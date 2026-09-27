@@ -837,15 +837,21 @@ audio {
    */
 
   .landscape-canvas {
-    position: absolute;
+    position: fixed;
 
     /*
-     * Before rotation:
+     * Build the landscape canvas BEFORE rotation:
+     *
      *   width  = phone height
      *   height = phone width
      *
-     * After rotate(90deg), this becomes the full
-     * landscape workspace of the phone.
+     * Then rotate the whole canvas by 90 degrees.
+     *
+     * IMPORTANT:
+     * We center it with margins instead of
+     * translate(-50%, -50%). This prevents Chrome on
+     * devices such as the Samsung S24 FE from producing
+     * a horizontal offset after the 90deg rotation.
      */
     width: 100svh;
     height: 100vw;
@@ -853,12 +859,13 @@ audio {
     left: 50%;
     top: 50%;
 
+    margin-left: -50svh;
+    margin-top: -50vw;
+
     right: auto;
     bottom: auto;
 
-    transform:
-      translate(-50%, -50%)
-      rotate(90deg);
+    transform: rotate(90deg);
 
     transform-origin: center center;
 
@@ -872,6 +879,12 @@ audio {
 
     width: 100%;
     height: 100%;
+
+    /*
+     * Keep the viewport locked to the canvas dimensions.
+     * This is especially important on mobile Chrome where
+     * browser UI can change the dynamic viewport.
+     */
 
     /*
      * The rotated canvas already defines the complete
