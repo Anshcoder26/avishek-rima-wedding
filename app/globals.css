@@ -1,26 +1,990 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  background: #650806;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100svh;
+}
+
+
+/* =========================================================
+   MAIN SITE
+========================================================= */
+
+.wedding-site {
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+  height: 100svh;
+
+  overflow: hidden;
+
+  background: #650806;
+}
+
+
+/* =========================================================
+   LANDSCAPE CANVAS
+========================================================= */
+
+.landscape-canvas {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: visible;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      #790b08 0%,
+      #690806 45%,
+      #4a0403 100%
+    );
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.wedding-background {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 210, 150, 0.035),
+      transparent 62%
+    );
+}
+
+
+/* =========================================================
+   INVITATION VIEWPORT
+========================================================= */
+
+.invitation-viewport {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 2vh 2vw;
+
+  overflow: visible;
+
+  perspective: 2600px;
+  perspective-origin: center center;
+
+  z-index: 5;
+}
+
+
+/* =========================================================
+   INVITATION STAGE
+========================================================= */
+
+.invitation-stage {
+  position: relative;
+
+  /*
+   * This controls the SIZE of the invitation.
+   */
+  width: min(84vw, 1280px);
+
+  aspect-ratio: 1536 / 1024;
+
+  flex: 0 0 auto;
+
+  overflow: visible;
+
+  transform-style: preserve-3d;
+
+  transform-origin: center center;
+
+  cursor: pointer;
+
+  outline: none;
+
+  -webkit-tap-highlight-color: transparent;
+
+  filter:
+    drop-shadow(
+      0 30px 65px rgba(0, 0, 0, 0.45)
+    );
+
+  will-change: transform;
+}
+
+
+/* =========================================================
+   =========================================================
+   INSIDE THREE-FOLD BOOK
+   =========================================================
+
+   IMPORTANT:
+
+   The open book is wider than the original cover.
+
+   We therefore position each panel using its ACTUAL
+   proportional width rather than trying to fit everything
+   inside the cover.
+
+========================================================= */
+
+
+/* =========================================================
+   COMMON PANEL
+========================================================= */
+
+.inside-panel {
+  position: absolute;
+
+  top: 50%;
+
+  /*
+   * All three panels have the same physical height.
+   */
+  height: 64%;
+
+  width: auto;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: visible;
+
+  transform-style: preserve-3d;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  will-change: transform;
+}
+
+
+/* =========================================================
+   LEFT PANEL
+   artwork-01.png
+
+   1105 × 1423
+
+   At 64% of stage height:
+   width ≈ 33.13% of stage width
+========================================================= */
+
+.inside-panel-left {
+  /*
+   * Final open position:
+   *
+   * Center panel begins at 18%.
+   * Left panel width is ~33.13%.
+   *
+   * Therefore:
+   *
+   * 18% - 33.13% = -15.13%
+   *
+   * Its RIGHT edge touches the center panel.
+   */
+
+  left: -15.13%;
+
+  aspect-ratio: 1105 / 1423;
+
+  transform-origin: right center;
+
+  transform:
+    translateY(-50%)
+    rotateY(92deg);
+
+  z-index: 20;
+}
+
+
+/* =========================================================
+   CENTER PANEL
+   inside.png
+
+   1536 × 1024
+
+   At 64% stage height:
+   width = 64% of stage width
+========================================================= */
+
+.inside-panel-center {
+  /*
+   * Center panel occupies:
+   *
+   * 18% → 82%
+   */
+
+  left: 18%;
+
+  aspect-ratio: 1536 / 1024;
+
+  transform-origin: center center;
+
+  transform:
+    translateY(-50%)
+    rotateY(0deg);
+
+  z-index: 30;
+}
+
+
+/* =========================================================
+   RIGHT PANEL
+   artwork-02.png
+
+   1103 × 1426
+
+   width ≈ 33.0% of stage width
+========================================================= */
+
+.inside-panel-right {
+  /*
+   * Center panel ends at 82%.
+   *
+   * Therefore right panel begins exactly there.
+   */
+
+  left: 82%;
+
+  aspect-ratio: 1103 / 1426;
+
+  transform-origin: left center;
+
+  transform:
+    translateY(-50%)
+    rotateY(-92deg);
+
+  z-index: 20;
+}
+
+
+/* =========================================================
+   PANEL SURFACE
+========================================================= */
+
+.panel-surface {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #650806;
+
+  transform-style: preserve-3d;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+
+/* =========================================================
+   PANEL ARTWORK
+========================================================= */
+
+.panel-surface > img {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: fill;
+
+  object-position: center;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+
+  pointer-events: none;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+
+/* =========================================================
+   CENTER ARTWORK
+========================================================= */
+
+.panel-surface .inside-background {
+  z-index: 1;
+
+  opacity: 1;
+
+  object-fit: fill;
+}
+
+
+/* =========================================================
+   LEFT FOLD SHADOW
+========================================================= */
+
+.inside-panel-left::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: 20px;
+  height: 100%;
+
+  pointer-events: none;
+
+  z-index: 50;
+
+  background:
+    linear-gradient(
+      to left,
+      rgba(0, 0, 0, 0.34),
+      rgba(0, 0, 0, 0.12),
+      transparent
+    );
+
+  opacity: 0.45;
+}
+
+
+/* =========================================================
+   RIGHT FOLD SHADOW
+========================================================= */
+
+.inside-panel-right::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 20px;
+  height: 100%;
+
+  pointer-events: none;
+
+  z-index: 50;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.34),
+      rgba(0, 0, 0, 0.12),
+      transparent
+    );
+
+  opacity: 0.45;
+}
+
+
+/* =========================================================
+   CENTER LEFT FOLD
+========================================================= */
+
+.inside-panel-center::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 8px;
+  height: 100%;
+
+  z-index: 40;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.22),
+      transparent
+    );
+
+  opacity: 0.2;
+}
+
+
+/* =========================================================
+   CENTER RIGHT FOLD
+========================================================= */
+
+.inside-panel-center::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: 8px;
+  height: 100%;
+
+  z-index: 40;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to left,
+      rgba(0, 0, 0, 0.22),
+      transparent
+    );
+
+  opacity: 0.2;
+}
+
+
+/* =========================================================
+   =========================================================
+   FRONT COVER
+   =========================================================
+========================================================= */
+
+.closed-cover {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 100;
+
+  overflow: visible;
+
+  background: transparent;
+
+  transform-style: preserve-3d;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   COVER HALF
+========================================================= */
+
+.cover-half {
+  position: absolute;
+
+  top: 0;
+
+  width: 50%;
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #650806;
+
+  transform-style: preserve-3d;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  will-change: transform;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   LEFT COVER
+========================================================= */
+
+.cover-half-left {
+  left: 0;
+
+  transform-origin: left center;
+
+  transform: rotateY(0deg);
+
+  z-index: 101;
+}
+
+
+/* =========================================================
+   RIGHT COVER
+========================================================= */
+
+.cover-half-right {
+  right: 0;
+
+  transform-origin: right center;
+
+  transform: rotateY(0deg);
+
+  z-index: 102;
+}
+
+
+/* =========================================================
+   COVER ARTWORK
+========================================================= */
+
+.cover-half img {
+  position: absolute;
+
+  top: 0;
+
+  width: 200%;
+  height: 100%;
+
+  max-width: none;
+
+  display: block;
+
+  object-fit: fill;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+
+  pointer-events: none;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+
+/* =========================================================
+   LEFT COVER IMAGE
+========================================================= */
+
+.cover-half-left img {
+  left: 0;
+}
+
+
+/* =========================================================
+   RIGHT COVER IMAGE
+========================================================= */
+
+.cover-half-right img {
+  right: 0;
+}
+
+
+/* =========================================================
+   =========================================================
+   ROSE PETALS
+   =========================================================
+========================================================= */
+
+.petal-shower {
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 9999;
+
+  isolation: isolate;
+}
+
+
+/* =========================================================
+   PETAL
+========================================================= */
+
+.rose-petal {
+  position: absolute;
+
+  display: block;
+
+  background:
+    linear-gradient(
+      135deg,
+      #a90018 0%,
+      #c91832 45%,
+      #7c0012 100%
+    );
+
+  border-radius:
+    100% 0 100% 0;
+
+  transform-origin:
+    center center;
+
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.22);
+
+  filter:
+    saturate(1.05);
+
+  will-change:
+    transform,
+    opacity;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   PETAL HIGHLIGHT
+========================================================= */
+
+.rose-petal::after {
+  content: "";
+
+  position: absolute;
+
+  width: 35%;
+  height: 25%;
+
+  left: 22%;
+  top: 17%;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 180, 190, 0.35);
+
+  filter: blur(1px);
+}
+
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+audio {
+  display: none;
+}
+
+
+/* =========================================================
+   TOUCH
+========================================================= */
+
+@media (hover: none) {
+  .invitation-stage {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.invitation-stage:focus {
+  outline: none;
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 901px) {
+  .invitation-viewport {
+    padding: 2vh 1.5vw;
+
+    perspective: 2600px;
+  }
+
+  .invitation-stage {
+    width: min(84vw, 1280px);
+
+    aspect-ratio: 1536 / 1024;
+  }
+
+  .inside-panel {
+    height: 64%;
+  }
+}
+
+
+/* =========================================================
+   LARGE DESKTOP
+========================================================= */
+
+@media (min-width: 1200px) {
+  .invitation-stage {
+    width: min(84vw, 1320px);
+  }
+
+  .inside-panel {
+    height: 64%;
+  }
+}
+
+
+/* =========================================================
+   VERY LARGE DESKTOP
+========================================================= */
+
+@media (min-width: 1600px) {
+  .invitation-stage {
+    width: min(82vw, 1400px);
+  }
+
+  .inside-panel {
+    height: 64%;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .invitation-viewport {
+    padding: 2vh 1vw;
+
+    perspective: 1900px;
+  }
+
+  .invitation-stage {
+    width: 94vw;
+
+    aspect-ratio: 1536 / 1024;
+  }
+
+  .inside-panel {
+    height: 63%;
+  }
+}
+
+
+/* =========================================================
+   LANDSCAPE MOBILE
+========================================================= */
+
+@media (orientation: landscape) and (max-width: 900px) {
+  .invitation-viewport {
+    padding: 1vh 1vw;
+
+    perspective: 1600px;
+
+    overflow: visible;
+  }
+
+  .invitation-stage {
+    width: auto;
+
+    height: 90svh;
+
+    aspect-ratio: 1536 / 1024;
+
+    overflow: visible;
+  }
+
+  .inside-panel {
+    height: 63%;
+  }
+}
+
+
+/* =========================================================
+   PORTRAIT MOBILE
+========================================================= */
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .landscape-canvas {
+    position: absolute;
+
+    width: 100svh;
+    height: 100vw;
+
+    left: 50%;
+    top: 50%;
+
+    right: auto;
+    bottom: auto;
+
+    transform:
+      translate(-50%, -50%)
+      rotate(90deg);
+
+    transform-origin: center center;
+
+    overflow: visible;
+  }
+
+  .invitation-viewport {
+    width: 100%;
+    height: 100%;
+
+    padding: 1vh 1vw;
+
+    overflow: visible;
+
+    perspective: 1400px;
+  }
+
+  .invitation-stage {
+    width: auto;
+
+    height: 88%;
+
+    aspect-ratio: 1536 / 1024;
+
+    overflow: visible;
+  }
+
+  .inside-panel {
+    height: 63%;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (orientation: portrait) and (max-width: 430px) {
+  .invitation-stage {
+    height: 90%;
+  }
+
+  .inside-panel {
+    height: 61%;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (orientation: portrait) and (max-width: 380px) {
+  .invitation-stage {
+    height: 88%;
+  }
+
+  .inside-panel {
+    height: 60%;
+  }
+}
+
+
+/* =========================================================
+   SHORT LANDSCAPE
+========================================================= */
+
+@media (orientation: landscape) and (max-height: 550px) {
+  .invitation-stage {
+    height: 90svh;
+
+    width: auto;
+
+    aspect-ratio: 1536 / 1024;
+  }
+
+  .inside-panel {
+    height: 62%;
+  }
+}
+
+
+/* =========================================================
+   DESKTOP + LOW HEIGHT
+========================================================= */
+
+@media (
+  orientation: landscape
+) and (
+  min-width: 901px
+) and (
+  max-height: 700px
+) {
+  .invitation-stage {
+    height: 82svh;
+
+    width: auto;
+
+    aspect-ratio: 1536 / 1024;
+  }
+
+  .inside-panel {
+    height: 60%;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .closed-cover,
+  .cover-half,
+  .inside-panel,
+  .invitation-stage,
+  .rose-petal {
+    animation: none !important;
+
+    transition: none !important;
+  }
+
+  .petal-shower {
+    display: none;
+  }
 }
