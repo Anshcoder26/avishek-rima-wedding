@@ -830,28 +830,38 @@ audio {
 
 @media (orientation: portrait) and (max-width: 600px) {
   /*
-   * Rotate the ENTIRE LANDSCAPE INVITATION.
+   * DEVICE-INDEPENDENT PORTRAIT MODE
    *
-   * The petal shower is a child of this element, so
-   * it rotates with it.
+   * Keep the page itself in the phone's normal portrait
+   * coordinate system. Only the invitation workspace is
+   * rotated into a logical landscape coordinate system.
+   *
+   * This avoids using a rotated full-screen element as the
+   * centering reference, which is what caused different
+   * results on the Oppo A18 and Samsung S24 FE.
    */
 
   .landscape-canvas {
     position: fixed;
 
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+
+    transform: none;
+  }
+
+  .invitation-viewport {
+    position: absolute;
+
     /*
-     * Build the landscape canvas BEFORE rotation:
+     * Logical landscape viewport.
      *
-     *   width  = phone height
-     *   height = phone width
-     *
-     * Then rotate the whole canvas by 90 degrees.
-     *
-     * IMPORTANT:
-     * We center it with margins instead of
-     * translate(-50%, -50%). This prevents Chrome on
-     * devices such as the Samsung S24 FE from producing
-     * a horizontal offset after the 90deg rotation.
+     * The dimensions are swapped because this viewport
+     * is rotated 90deg below.
      */
     width: 100svh;
     height: 100vw;
@@ -862,34 +872,6 @@ audio {
     margin-left: -50svh;
     margin-top: -50vw;
 
-    right: auto;
-    bottom: auto;
-
-    transform: rotate(90deg);
-
-    transform-origin: center center;
-
-    overflow: visible;
-  }
-
-  .invitation-viewport {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    /*
-     * Keep the viewport locked to the canvas dimensions.
-     * This is especially important on mobile Chrome where
-     * browser UI can change the dynamic viewport.
-     */
-
-    /*
-     * The rotated canvas already defines the complete
-     * landscape viewport, so no mobile padding is needed.
-     */
     padding: 0;
 
     display: flex;
@@ -900,31 +882,26 @@ audio {
 
     perspective: 1400px;
     perspective-origin: center center;
+
+    transform: rotate(90deg);
+    transform-origin: center center;
   }
 
   /*
-   * IMPORTANT MOBILE SIZE FIX
+   * CANONICAL INVITATION GEOMETRY
    *
-   * Do NOT use width: 88% here.
+   * The invitation keeps its 1536:1024 geometry and is
+   * uniformly sized inside the logical landscape viewport.
    *
-   * Before rotation, .landscape-canvas has a width equal
-   * to the phone's HEIGHT. A percentage width therefore
-   * makes the invitation too large on portrait phones.
-   *
-   * The canvas HEIGHT equals the phone WIDTH, so sizing
-   * the invitation from vw gives stable sizing across
-   * Samsung, Oppo and other portrait devices.
-   *
-   * 84vw keeps the closed cover comfortably inside the
-   * phone while leaving enough room for the opened
-   * three-fold spread.
+   * 84% is relative to the logical viewport height, which
+   * corresponds to the phone's portrait width.
    */
 
   .invitation-stage {
     position: relative;
 
     width: auto;
-    height: 84vw;
+    height: 84%;
 
     aspect-ratio: 1536 / 1024;
 
@@ -941,19 +918,78 @@ audio {
   }
 
   /*
-   * Keep the petal shower landscape relative.
-   * It must NOT receive its own rotation.
+   * Keep petals in the same logical landscape coordinate
+   * system as the invitation.
    */
 
   .petal-shower {
     position: absolute;
 
-    inset: 0;
+    width: 100svh;
+    height: 100vw;
 
-    width: 100%;
-    height: 100%;
+    left: 50%;
+    top: 50%;
+
+    margin-left: -50svh;
+    margin-top: -50vw;
+
+    inset: auto;
+
+    transform: rotate(90deg);
+    transform-origin: center center;
+
+    overflow: hidden;
+  }
+}
+
+
+/* =========================================================
+   SMALL PORTRAIT PHONES
+========================================================= */
+
+@media (orientation: portrait) and (max-width: 430px) {
+  .invitation-stage {
+    width: auto;
+    height: 84%;
+
+    aspect-ratio: 1536 / 1024;
 
     transform: none;
+  }
+
+  .inside-panel {
+    height: 61%;
+  }
+
+  .petal-shower {
+    width: 100svh;
+    height: 100vw;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PORTRAIT PHONES
+========================================================= */
+
+@media (orientation: portrait) and (max-width: 380px) {
+  .invitation-stage {
+    width: auto;
+    height: 84%;
+
+    aspect-ratio: 1536 / 1024;
+
+    transform: none;
+  }
+
+  .inside-panel {
+    height: 60%;
+  }
+
+  .petal-shower {
+    width: 100svh;
+    height: 100vw;
   }
 }
 
