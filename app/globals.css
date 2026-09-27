@@ -723,7 +723,7 @@ audio {
   }
 
   .invitation-stage {
-    width: min(84vw, 1280px);
+    width: min(80vw, 1200px);
 
     aspect-ratio: 1536 / 1024;
   }
@@ -740,7 +740,7 @@ audio {
 
 @media (min-width: 1200px) {
   .invitation-stage {
-    width: min(84vw, 1320px);
+    width: min(80vw, 1200px);
   }
 
   .inside-panel {
@@ -755,7 +755,7 @@ audio {
 
 @media (min-width: 1600px) {
   .invitation-stage {
-    width: min(82vw, 1400px);
+    width: min(80vw, 1200px);
   }
 
   .inside-panel {
