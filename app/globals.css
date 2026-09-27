@@ -1100,7 +1100,7 @@ audio {
 
 @media (orientation: portrait) and (max-width: 380px) {
   .tap-to-open {
-    top: calc(100% + 14px);
+    top: calc(100% - 24px);
     font-size: 9px;
   }
 
