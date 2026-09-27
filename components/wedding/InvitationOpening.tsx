@@ -14,117 +14,286 @@ export default function InvitationOpening({
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const leftCoverRef = useRef<HTMLDivElement>(null);
-  const rightCoverRef = useRef<HTMLDivElement>(null);
+  const petalContainerRef =
+    useRef<HTMLDivElement | null>(null);
 
-  const leftPanelRef = useRef<HTMLDivElement>(null);
-  const centerPanelRef = useRef<HTMLDivElement>(null);
-  const rightPanelRef = useRef<HTMLDivElement>(null);
+  const leftCoverRef =
+    useRef<HTMLDivElement>(null);
 
-  const petalContainerRef = useRef<HTMLDivElement>(null);
+  const rightCoverRef =
+    useRef<HTMLDivElement>(null);
+
+  const leftPanelRef =
+    useRef<HTMLDivElement>(null);
+
+  const centerPanelRef =
+    useRef<HTMLDivElement>(null);
+
+  const rightPanelRef =
+    useRef<HTMLDivElement>(null);
+
 
   /*
    * =========================================================
-   * AUDIO
+   * WEDDING SONG
    * =========================================================
    */
 
   const playWeddingSong = () => {
     try {
       if (!audioRef.current) {
-        const audio = new Audio("/audio/wedding-song.mp3");
+        const audio = new Audio(
+          "/audio/wedding-song.mp3"
+        );
 
         audio.preload = "auto";
+
         audio.loop = true;
+
         audio.volume = 0.72;
 
         audioRef.current = audio;
 
+        /*
+         * Audio errors should NEVER stop the invitation
+         * animation.
+         */
         audio.addEventListener("error", () => {
-          // Never allow audio problems to affect the invitation.
+          // Intentionally ignored.
         });
       }
 
-      audioRef.current.play().catch(() => {
-        // Ignore unsupported / unavailable audio.
-      });
+      const audio = audioRef.current;
+
+      if (!audio) return;
+
+      audio.currentTime = 0;
+
+      const playPromise = audio.play();
+
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          /*
+           * Ignore audio errors.
+           *
+           * The invitation must continue opening even if
+           * the browser cannot decode the audio file.
+           */
+        });
+      }
     } catch {
-      // Ignore audio errors.
+      /*
+       * Ignore audio errors completely.
+       */
     }
   };
 
 
   /*
    * =========================================================
-   * ROSE PETALS
+   * ROSE PETAL SHOWER
+   * =========================================================
+   *
+   * IMPORTANT:
+   *
+   * This container is INSIDE the landscape canvas.
+   *
+   * On portrait phones:
+   *
+   * .landscape-canvas
+   *       ↓
+   *   rotates 90°
+   *
+   * and therefore:
+   *
+   * .petal-shower
+   *       ↓
+   *   rotates 90°
+   *
+   * with the invitation.
+   *
+   * This keeps the shower LANDSCAPE relative to the
+   * invitation rather than portrait relative to the phone.
    * =========================================================
    */
 
   const createRosePetals = () => {
-    const container = petalContainerRef.current;
+    const container =
+      petalContainerRef.current;
 
     if (!container) return;
 
+    /*
+     * Remove any previous petals.
+     */
     container.innerHTML = "";
 
+    /*
+     * Number of petals.
+     */
     const PETAL_COUNT = 140;
 
     for (let i = 0; i < PETAL_COUNT; i++) {
-      const petal = document.createElement("span");
+      const petal =
+        document.createElement("span");
 
       petal.className = "rose-petal";
 
+
       /*
-       * FULL SCREEN DISTRIBUTION
+       * =====================================================
+       * START POSITION
+       * =====================================================
+       *
+       * Spread across the ENTIRE landscape width.
+       *
+       * -10 → 110 means petals can begin slightly outside
+       * both edges.
        */
-      const startX = gsap.utils.random(0, 100);
-      const startY = gsap.utils.random(-20, 5);
 
-      const drift = gsap.utils.random(-25, 25);
+      const startX =
+        gsap.utils.random(-10, 110);
 
-      const endX = startX + drift;
-      const endY = gsap.utils.random(105, 125);
+      /*
+       * Start slightly above the top.
+       */
 
-      const size = gsap.utils.random(7, 16);
+      const startY =
+        gsap.utils.random(-20, 5);
 
-      const rotation = gsap.utils.random(0, 360);
 
-      const rotationAmount = gsap.utils.random(
-        540,
-        1200
-      );
+      /*
+       * =====================================================
+       * WIND / HORIZONTAL MOVEMENT
+       * =====================================================
+       */
 
-      const duration = gsap.utils.random(
-        7,
-        10
-      );
+      const horizontalDrift =
+        gsap.utils.random(-25, 25);
 
-      const delay = gsap.utils.random(
-        0,
-        2.5
-      );
+      const endX =
+        startX + horizontalDrift;
+
+
+      /*
+       * Fall beyond the bottom.
+       */
+
+      const endY =
+        gsap.utils.random(105, 125);
+
+
+      /*
+       * =====================================================
+       * RANDOM PETAL APPEARANCE
+       * =====================================================
+       */
+
+      const size =
+        gsap.utils.random(7, 16);
+
+      const heightMultiplier =
+        gsap.utils.random(
+          1.15,
+          1.55
+        );
+
+      const startRotation =
+        gsap.utils.random(
+          0,
+          360
+        );
+
+      const rotationAmount =
+        gsap.utils.random(
+          540,
+          1200
+        );
+
+      const scale =
+        gsap.utils.random(
+          0.75,
+          1.15
+        );
+
+      const opacity =
+        gsap.utils.random(
+          0.55,
+          0.95
+        );
+
+
+      /*
+       * =====================================================
+       * LONG FALL
+       * =====================================================
+       *
+       * Every petal falls for at least ~7 seconds.
+       */
+
+      const duration =
+        gsap.utils.random(
+          7,
+          10
+        );
+
+
+      /*
+       * Stagger the shower.
+       */
+
+      const delay =
+        gsap.utils.random(
+          0,
+          2.5
+        );
+
+
+      /*
+       * =====================================================
+       * INITIAL STATE
+       * =====================================================
+       */
 
       gsap.set(petal, {
         left: `${startX}%`,
         top: `${startY}%`,
 
         width: size,
-        height: size * gsap.utils.random(1.15, 1.55),
 
-        opacity: gsap.utils.random(0.55, 0.95),
+        height:
+          size * heightMultiplier,
 
-        rotation,
+        opacity,
 
-        scale: gsap.utils.random(0.75, 1.15),
+        rotation:
+          startRotation,
+
+        scale,
       });
+
+
+      /*
+       * Add to landscape petal container.
+       */
 
       container.appendChild(petal);
 
+
+      /*
+       * =====================================================
+       * FALL ANIMATION
+       * =====================================================
+       */
+
       gsap.to(petal, {
         left: `${endX}%`,
+
         top: `${endY}%`,
 
-        rotation: rotation + rotationAmount,
+        rotation:
+          startRotation +
+          rotationAmount,
 
         duration,
 
@@ -133,12 +302,22 @@ export default function InvitationOpening({
         ease: "none",
       });
 
+
+      /*
+       * =====================================================
+       * FADE OUT NEAR THE END
+       * =====================================================
+       */
+
       gsap.to(petal, {
         opacity: 0,
 
-        duration: 1.3,
+        duration: 1.4,
 
-        delay: delay + duration - 1.3,
+        delay:
+          delay +
+          duration -
+          1.4,
 
         ease: "power1.out",
       });
@@ -148,21 +327,42 @@ export default function InvitationOpening({
 
   /*
    * =========================================================
-   * OPEN THREE-FOLD INVITATION
+   * OPEN INVITATION
    * =========================================================
    */
 
   const openInvitation = () => {
+    /*
+     * Prevent double-clicking from starting multiple
+     * timelines.
+     */
+
     if (openedRef.current) return;
 
     openedRef.current = true;
 
-    const leftCover = leftCoverRef.current;
-    const rightCover = rightCoverRef.current;
 
-    const leftPanel = leftPanelRef.current;
-    const centerPanel = centerPanelRef.current;
-    const rightPanel = rightPanelRef.current;
+    /*
+     * =====================================================
+     * GET ELEMENTS
+     * =====================================================
+     */
+
+    const leftCover =
+      leftCoverRef.current;
+
+    const rightCover =
+      rightCoverRef.current;
+
+    const leftPanel =
+      leftPanelRef.current;
+
+    const centerPanel =
+      centerPanelRef.current;
+
+    const rightPanel =
+      rightPanelRef.current;
+
 
     if (
       !leftCover ||
@@ -174,9 +374,17 @@ export default function InvitationOpening({
       return;
     }
 
+
     /*
      * =====================================================
-     * CLICK
+     * CLICK ACTIONS
+     * =====================================================
+     *
+     * Song starts immediately.
+     *
+     * Petal shower starts immediately.
+     *
+     * Invitation remains closed for 4 seconds.
      * =====================================================
      */
 
@@ -187,7 +395,7 @@ export default function InvitationOpening({
 
     /*
      * =====================================================
-     * INITIAL CLOSED BOOK
+     * INITIAL CLOSED STATE
      * =====================================================
      */
 
@@ -199,8 +407,9 @@ export default function InvitationOpening({
       rotationY: 0,
     });
 
+
     /*
-     * Inside panels begin folded behind the cover.
+     * Inside panels are physically underneath the cover.
      */
 
     gsap.set(leftPanel, {
@@ -218,22 +427,7 @@ export default function InvitationOpening({
 
     /*
      * =====================================================
-     * BOOK OPENING TIMELINE
-     *
-     * 0–4 sec:
-     * Completely closed.
-     *
-     * 4 sec:
-     * Left side starts opening.
-     *
-     * LEFT COVER + LEFT INSIDE PANEL
-     * move simultaneously.
-     *
-     * 4.0 → 7.0
-     *
-     * Then right side starts.
-     *
-     * 6.7 → 9.7
+     * MASTER TIMELINE
      * =====================================================
      */
 
@@ -250,9 +444,13 @@ export default function InvitationOpening({
 
     /*
      * =====================================================
-     * PHASE 1
+     * 0 → 4 SECONDS
      *
-     * CLOSED FOR 4 SECONDS
+     * CLOSED COVER
+     *
+     * Petals are falling.
+     * Music is playing.
+     * Book is waiting.
      * =====================================================
      */
 
@@ -266,11 +464,15 @@ export default function InvitationOpening({
 
     /*
      * =====================================================
-     * PHASE 2
+     * 4 → 7 SECONDS
      *
-     * LEFT SIDE OPENS
+     * LEFT SIDE
      *
-     * The cover and left inside panel move together.
+     * Front cover opens outward.
+     *
+     * Left inside artwork unfolds simultaneously.
+     *
+     * This is intended to feel like a real book/fold.
      * =====================================================
      */
 
@@ -279,7 +481,7 @@ export default function InvitationOpening({
       {
         rotationY: -175,
 
-        duration: 2.9,
+        duration: 3,
 
         ease: "power3.inOut",
       },
@@ -291,7 +493,7 @@ export default function InvitationOpening({
       {
         rotationY: 0,
 
-        duration: 2.9,
+        duration: 3,
 
         ease: "power3.inOut",
       },
@@ -301,14 +503,48 @@ export default function InvitationOpening({
 
     /*
      * =====================================================
-     * CENTER PANEL
+     * RIGHT SIDE
      *
-     * It is already physically underneath.
+     * Starts slightly before the left side completely
+     * finishes so the whole motion feels continuous.
      *
-     * It doesn't suddenly appear.
+     * 6.7 → 9.7
+     * =====================================================
+     */
+
+    tl.to(
+      rightCover,
+      {
+        rotationY: 175,
+
+        duration: 3,
+
+        ease: "power3.inOut",
+      },
+      6.7
+    );
+
+    tl.to(
+      rightPanel,
+      {
+        rotationY: 0,
+
+        duration: 3,
+
+        ease: "power3.inOut",
+      },
+      6.7
+    );
+
+
+    /*
+     * =====================================================
+     * CENTER
      *
-     * As the left side opens, the center artwork naturally
-     * becomes visible.
+     * The center artwork is already underneath and remains
+     * stationary.
+     *
+     * It becomes visible naturally as the two sides open.
      * =====================================================
      */
 
@@ -323,43 +559,7 @@ export default function InvitationOpening({
 
     /*
      * =====================================================
-     * PHASE 3
-     *
-     * RIGHT SIDE OPENS
-     *
-     * Starts slightly before left side has completely
-     * finished so there is NO DEAD GAP.
-     * =====================================================
-     */
-
-    tl.to(
-      rightCover,
-      {
-        rotationY: 175,
-
-        duration: 2.9,
-
-        ease: "power3.inOut",
-      },
-      6.65
-    );
-
-    tl.to(
-      rightPanel,
-      {
-        rotationY: 0,
-
-        duration: 2.9,
-
-        ease: "power3.inOut",
-      },
-      6.65
-    );
-
-
-    /*
-     * =====================================================
-     * FINAL BOOK SETTLE
+     * FINAL SETTLE
      * =====================================================
      */
 
@@ -376,7 +576,7 @@ export default function InvitationOpening({
 
         ease: "power2.out",
       },
-      9.4
+      9.45
     );
 
     tl.to(
@@ -392,7 +592,7 @@ export default function InvitationOpening({
 
         ease: "power2.out",
       },
-      9.56
+      9.61
     );
   };
 
@@ -406,7 +606,19 @@ export default function InvitationOpening({
   return (
     <>
       {/* ===================================================
-          FULL SCREEN PETALS
+          LANDSCAPE PETAL SHOWER
+
+          IMPORTANT:
+
+          This is intentionally rendered INSIDE the
+          InvitationOpening component.
+
+          Since InvitationOpening is inside:
+
+              .landscape-canvas
+
+          the petals rotate together with the invitation
+          on portrait mobile.
       ==================================================== */}
 
       <div
@@ -417,7 +629,7 @@ export default function InvitationOpening({
 
 
       {/* ===================================================
-          INVITATION
+          INVITATION STAGE
       ==================================================== */}
 
       <div
@@ -450,11 +662,13 @@ export default function InvitationOpening({
           "
         >
           <div className="panel-surface">
+
             <img
               src="/invitation/artwork-01.png"
               alt=""
               draggable={false}
             />
+
           </div>
         </div>
 
@@ -471,12 +685,14 @@ export default function InvitationOpening({
           "
         >
           <div className="panel-surface">
+
             <img
               src="/invitation/inside.png"
               alt=""
               className="inside-background"
               draggable={false}
             />
+
           </div>
         </div>
 
@@ -493,11 +709,13 @@ export default function InvitationOpening({
           "
         >
           <div className="panel-surface">
+
             <img
               src="/invitation/artwork-02.png"
               alt=""
               draggable={false}
             />
+
           </div>
         </div>
 
@@ -508,7 +726,9 @@ export default function InvitationOpening({
 
         <div className="closed-cover">
 
-          {/* LEFT HALF OF FRONT COVER */}
+          {/* =================================================
+              LEFT HALF OF COVER
+          ================================================= */}
 
           <div
             ref={leftCoverRef}
@@ -525,7 +745,9 @@ export default function InvitationOpening({
           </div>
 
 
-          {/* RIGHT HALF OF FRONT COVER */}
+          {/* =================================================
+              RIGHT HALF OF COVER
+          ================================================= */}
 
           <div
             ref={rightCoverRef}

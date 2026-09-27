@@ -32,7 +32,7 @@ body {
 
 
 /* =========================================================
-   MAIN SITE
+   MAIN WEDDING SITE
 ========================================================= */
 
 .wedding-site {
@@ -131,9 +131,6 @@ body {
 .invitation-stage {
   position: relative;
 
-  /*
-   * This controls the SIZE of the invitation.
-   */
   width: min(84vw, 1280px);
 
   aspect-ratio: 1536 / 1024;
@@ -163,22 +160,13 @@ body {
 
 /* =========================================================
    =========================================================
-   INSIDE THREE-FOLD BOOK
+   THREE-FOLD INSIDE BOOK
    =========================================================
-
-   IMPORTANT:
-
-   The open book is wider than the original cover.
-
-   We therefore position each panel using its ACTUAL
-   proportional width rather than trying to fit everything
-   inside the cover.
-
 ========================================================= */
 
 
 /* =========================================================
-   COMMON PANEL
+   COMMON INSIDE PANEL
 ========================================================= */
 
 .inside-panel {
@@ -186,9 +174,6 @@ body {
 
   top: 50%;
 
-  /*
-   * All three panels have the same physical height.
-   */
   height: 64%;
 
   width: auto;
@@ -208,29 +193,12 @@ body {
 
 
 /* =========================================================
-   LEFT PANEL
+   LEFT INSIDE PANEL
    artwork-01.png
-
    1105 × 1423
-
-   At 64% of stage height:
-   width ≈ 33.13% of stage width
 ========================================================= */
 
 .inside-panel-left {
-  /*
-   * Final open position:
-   *
-   * Center panel begins at 18%.
-   * Left panel width is ~33.13%.
-   *
-   * Therefore:
-   *
-   * 18% - 33.13% = -15.13%
-   *
-   * Its RIGHT edge touches the center panel.
-   */
-
   left: -15.13%;
 
   aspect-ratio: 1105 / 1423;
@@ -246,22 +214,12 @@ body {
 
 
 /* =========================================================
-   CENTER PANEL
+   CENTER INSIDE PANEL
    inside.png
-
    1536 × 1024
-
-   At 64% stage height:
-   width = 64% of stage width
 ========================================================= */
 
 .inside-panel-center {
-  /*
-   * Center panel occupies:
-   *
-   * 18% → 82%
-   */
-
   left: 18%;
 
   aspect-ratio: 1536 / 1024;
@@ -277,21 +235,12 @@ body {
 
 
 /* =========================================================
-   RIGHT PANEL
+   RIGHT INSIDE PANEL
    artwork-02.png
-
    1103 × 1426
-
-   width ≈ 33.0% of stage width
 ========================================================= */
 
 .inside-panel-right {
-  /*
-   * Center panel ends at 82%.
-   *
-   * Therefore right panel begins exactly there.
-   */
-
   left: 82%;
 
   aspect-ratio: 1103 / 1426;
@@ -547,7 +496,7 @@ body {
 
 
 /* =========================================================
-   LEFT COVER
+   LEFT COVER HALF
 ========================================================= */
 
 .cover-half-left {
@@ -562,7 +511,7 @@ body {
 
 
 /* =========================================================
-   RIGHT COVER
+   RIGHT COVER HALF
 ========================================================= */
 
 .cover-half-right {
@@ -625,30 +574,49 @@ body {
 
 /* =========================================================
    =========================================================
-   ROSE PETALS
+   ROSE PETAL SHOWER
+   LANDSCAPE RELATIVE
    =========================================================
 ========================================================= */
 
 .petal-shower {
-  position: fixed;
+  position: absolute;
 
   inset: 0;
 
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 
   overflow: hidden;
 
   pointer-events: none;
 
+  /*
+   * Above invitation.
+   */
   z-index: 9999;
+
+  /*
+   * IMPORTANT:
+   *
+   * Do NOT rotate this independently.
+   *
+   * This element is inside .landscape-canvas.
+   *
+   * On portrait mobile:
+   *
+   * .landscape-canvas rotates 90deg
+   *
+   * and the petal shower rotates with it.
+   */
+  transform: none;
 
   isolation: isolate;
 }
 
 
 /* =========================================================
-   PETAL
+   INDIVIDUAL ROSE PETAL
 ========================================================= */
 
 .rose-petal {
@@ -678,6 +646,8 @@ body {
 
   will-change:
     transform,
+    left,
+    top,
     opacity;
 
   pointer-events: none;
@@ -718,7 +688,7 @@ audio {
 
 
 /* =========================================================
-   TOUCH
+   TOUCH DEVICES
 ========================================================= */
 
 @media (hover: none) {
@@ -738,7 +708,9 @@ audio {
 
 
 /* =========================================================
+   =========================================================
    DESKTOP
+   =========================================================
 ========================================================= */
 
 @media (min-width: 901px) {
@@ -746,6 +718,8 @@ audio {
     padding: 2vh 1.5vw;
 
     perspective: 2600px;
+
+    perspective-origin: center center;
   }
 
   .invitation-stage {
@@ -791,7 +765,9 @@ audio {
 
 
 /* =========================================================
+   =========================================================
    TABLET
+   =========================================================
 ========================================================= */
 
 @media (min-width: 601px) and (max-width: 900px) {
@@ -799,6 +775,8 @@ audio {
     padding: 2vh 1vw;
 
     perspective: 1900px;
+
+    perspective-origin: center center;
   }
 
   .invitation-stage {
@@ -814,7 +792,9 @@ audio {
 
 
 /* =========================================================
+   =========================================================
    LANDSCAPE MOBILE
+   =========================================================
 ========================================================= */
 
 @media (orientation: landscape) and (max-width: 900px) {
@@ -843,10 +823,19 @@ audio {
 
 
 /* =========================================================
+   =========================================================
    PORTRAIT MOBILE
+   =========================================================
 ========================================================= */
 
 @media (orientation: portrait) and (max-width: 600px) {
+  /*
+   * Rotate the ENTIRE LANDSCAPE INVITATION.
+   *
+   * The petal shower is a child of this element, so
+   * it rotates with it.
+   */
+
   .landscape-canvas {
     position: absolute;
 
@@ -892,11 +881,26 @@ audio {
   .inside-panel {
     height: 63%;
   }
+
+  /*
+   * Keep the petal shower landscape relative.
+   */
+
+  .petal-shower {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    transform: none;
+  }
 }
 
 
 /* =========================================================
-   SMALL MOBILE
+   SMALL PORTRAIT PHONES
 ========================================================= */
 
 @media (orientation: portrait) and (max-width: 430px) {
@@ -907,11 +911,16 @@ audio {
   .inside-panel {
     height: 61%;
   }
+
+  .petal-shower {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 
 /* =========================================================
-   VERY SMALL MOBILE
+   VERY SMALL PORTRAIT PHONES
 ========================================================= */
 
 @media (orientation: portrait) and (max-width: 380px) {
@@ -922,11 +931,18 @@ audio {
   .inside-panel {
     height: 60%;
   }
+
+  .petal-shower {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 
 /* =========================================================
-   SHORT LANDSCAPE
+   =========================================================
+   SHORT LANDSCAPE SCREENS
+   =========================================================
 ========================================================= */
 
 @media (orientation: landscape) and (max-height: 550px) {
@@ -970,7 +986,9 @@ audio {
 
 
 /* =========================================================
+   =========================================================
    REDUCED MOTION
+   =========================================================
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
