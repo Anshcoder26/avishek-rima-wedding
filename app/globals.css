@@ -861,19 +861,45 @@ audio {
     width: 100%;
     height: 100%;
 
-    padding: 1vh 1vw;
+    /*
+     * Removed the previous mobile padding because
+     * the rotated canvas already provides the viewport.
+     */
+    padding: 0;
 
     overflow: visible;
 
     perspective: 1400px;
+    perspective-origin: center center;
   }
 
-  .invitation-stage {
-    width: auto;
+  /*
+   * IMPORTANT MOBILE FIX
+   *
+   * The canvas is landscape after rotation.
+   *
+   * Therefore the invitation must be sized from the
+   * landscape WIDTH, not from HEIGHT: 88%.
+   *
+   * This keeps the three-fold spread centered when
+   * the cover opens.
+   */
 
-    height: 88%;
+  .invitation-stage {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 88%;
+    height: auto;
 
     aspect-ratio: 1536 / 1024;
+
+    transform:
+      translate(-50%, -50%);
+
+    transform-origin: center center;
 
     overflow: visible;
   }
@@ -905,7 +931,18 @@ audio {
 
 @media (orientation: portrait) and (max-width: 430px) {
   .invitation-stage {
-    height: 90%;
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 88%;
+    height: auto;
+
+    aspect-ratio: 1536 / 1024;
+
+    transform:
+      translate(-50%, -50%);
   }
 
   .inside-panel {
@@ -925,7 +962,18 @@ audio {
 
 @media (orientation: portrait) and (max-width: 380px) {
   .invitation-stage {
-    height: 88%;
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 88%;
+    height: auto;
+
+    aspect-ratio: 1536 / 1024;
+
+    transform:
+      translate(-50%, -50%);
   }
 
   .inside-panel {
